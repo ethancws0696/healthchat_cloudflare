@@ -1,0 +1,6 @@
+{
+  "version": "1.1.0",
+  "buildTimestamp": "2025-03-26T10:55:00.000Z",
+  "environment": "production",
+  "apiEndpoint": "https://healthchat.ethan-c87.workers.dev"
+}

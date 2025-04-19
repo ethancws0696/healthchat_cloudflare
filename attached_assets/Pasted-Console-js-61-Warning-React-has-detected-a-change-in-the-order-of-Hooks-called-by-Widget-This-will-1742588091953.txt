@@ -1,0 +1,66 @@
+Console.js:61 Warning: React has detected a change in the order of Hooks called by Widget. This will lead to bugs and errors if not fixed. For more information, read the Rules of Hooks: https://reactjs.org/link/rules-of-hooks
+
+   Previous render            Next render
+   ------------------------------------------------------
+1. useContext                 useContext
+2. useState                   useState
+3. useState                   useState
+4. useState                   useState
+5. useState                   useState
+6. useState                   useState
+7. useState                   useState
+8. useRef                     useRef
+9. useRef                     useRef
+10. useContext                useContext
+11. useContext                useContext
+12. useContext                useContext
+13. useEffect                 useEffect
+14. useState                  useState
+15. useCallback               useCallback
+16. useSyncExternalStore      useSyncExternalStore
+17. useEffect                 useEffect
+18. useContext                useContext
+19. useContext                useContext
+20. useContext                useContext
+21. useEffect                 useEffect
+22. useState                  useState
+23. useCallback               useCallback
+24. useSyncExternalStore      useSyncExternalStore
+25. useEffect                 useEffect
+26. useEffect                 useEffect
+27. useEffect                 useEffect
+28. useEffect                 useEffect
+29. useEffect                 useEffect
+30. undefined                 useEffect
+   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    at Widget (https://a5d90037-8c98-43f7-bc36-b4df1f01220a-00-1mb6jv1erfirx.kirk.replit.dev/src/pages/widget/Widget.tsx:26:18)
+    at Route (https://a5d90037-8c98-43f7-bc36-b4df1f01220a-00-1mb6jv1erfirx.kirk.replit.d…/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=749443d9:323:16)
+    at Switch (https://a5d90037-8c98-43f7-bc36-b4df1f01220a-00-1mb6jv1erfirx.kirk.replit.d…/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=749443d9:379:17)
+    at Router
+    at AuthProvider (https://a5d90037-8c98-43f7-bc36-b4df1f01220a-00-1mb6jv1erfirx.kirk.replit.dev/src/context/AuthContext.tsx:34:32)
+    at QueryClientProvider (https://a5d90037-8c98-43f7-bc36-b4df1f01220a-00-1mb6jv1erfirx.kirk.replit.d…rkspace/node_modules/.vite/deps/@tanstack_react-query.js?v=749443d9:2805:3)
+    at App
+
+chunk-WERSD76P.js?v=749443d9:11678 Uncaught Error: Rendered more hooks than during the previous render.
+    at Widget (Widget.tsx:207:3)
+chunk-WERSD76P.js?v=749443d9:11678 Uncaught Error: Rendered more hooks than during the previous render.
+    at Widget (Widget.tsx:207:3)
+Console.js:61 The above error occurred in the <Widget> component:
+
+    at Widget (https://a5d90037-8c98-43f7-bc36-b4df1f01220a-00-1mb6jv1erfirx.kirk.replit.dev/src/pages/widget/Widget.tsx:26:18)
+    at Route (https://a5d90037-8c98-43f7-bc36-b4df1f01220a-00-1mb6jv1erfirx.kirk.replit.d…/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=749443d9:323:16)
+    at Switch (https://a5d90037-8c98-43f7-bc36-b4df1f01220a-00-1mb6jv1erfirx.kirk.replit.d…/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=749443d9:379:17)
+    at Router
+    at AuthProvider (https://a5d90037-8c98-43f7-bc36-b4df1f01220a-00-1mb6jv1erfirx.kirk.replit.dev/src/context/AuthContext.tsx:34:32)
+    at QueryClientProvider (https://a5d90037-8c98-43f7-bc36-b4df1f01220a-00-1mb6jv1erfirx.kirk.replit.d…rkspace/node_modules/.vite/deps/@tanstack_react-query.js?v=749443d9:2805:3)
+    at App
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+chunk-WERSD76P.js?v=749443d9:11678 Uncaught Error: Rendered more hooks than during the previous render.
+    at Widget (Widget.tsx:207:3)
+
+3
+1.js:90 HealthChat Widget: Ignoring message from unauthorized origin: https://a5d90037-8c98-43f7-bc36-b4df1f01220a-00-1mb6jv1erfirx.kirk.replit.dev
+﻿

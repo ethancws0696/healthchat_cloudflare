@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Healthcare Chat Widget</title>
+  <!-- Special script for Cloudflare Pages to prevent "Unexpected token '<'" errors -->
+  <script data-headers="X-Widget-Mode: standalone">
+    // This is a special script that helps prevent the main.tsx React app
+    // from loading when this widget HTML file is served in Cloudflare Pages.
+    // It's detected by the guard at the top of main.tsx.
+    console.log("Widget mode header script loaded");
+  </script>
+  
+  <!-- Load the Cloudflare-specific helper script -->
+  <script>
+    // Check if we're in a Cloudflare Pages environment
+    const isCloudflarePages = window.location.hostname.includes('pages.dev');
+    
+    if (isCloudflarePages) {
+      console.log("Cloudflare Pages environment detected, loading special helper");
+      const helperScript = document.createElement('script');
+      helperScript.src = '/cloudflare-widget-helper.js';
+      document.head.appendChild(helperScript);
+    }
+  </script>
+  <!-- 
+    IMPORTANT: This is a standalone widget implementation 
+    that does NOT use the React application or main.tsx.
+    It has its own independent HTML/CSS/JS.
+  -->
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background-color: #f9fafb;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    #root {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .chat-widget {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+    }
+    
+    .chat-header {
+      background-color: #4F46E5;
+      color: white;
+      padding: 16px;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .chat-content {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    .chat-message {
+      display: flex;
+      flex-direction: column;
+      max-width: 80%;
+    }
+    
+    .user-message {
+      align-self: flex-end;
+    }
+    
+    .assistant-message {
+      align-self: flex-start;
+    }
+    
+    .message-bubble {
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.5;
+      word-wrap: break-word;
+    }
+    
+    .user-bubble {
+      background-color: #4F46E5;
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+    
+    .assistant-bubble {
+      background-color: #f3f4f6;
+      color: #111827;
+      border-bottom-left-radius: 4px;
+    }
+    
+    .message-meta {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 4px;
+      align-self: flex-start;
+    }
+    
+    .user-message .message-meta {
+      align-self: flex-end;
+    }
+    
+    .chat-input-container {
+      padding: 16px;
+      border-top: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+    }
+    
+    .chat-input {
+      flex: 1;
+      padding: 10px 16px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 14px;
+      resize: none;
+      height: 40px;
+      max-height: 100px;
+      overflow-y: auto;
+      line-height: 1.4;
+      outline: none;
+    }
+    
+    .send-button {
+      margin-left: 8px;
+      background-color: #4F46E5;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    
+    .typing-indicator {
+      font-size: 12px;
+      color: #6b7280;
+      margin-left: 4px;
+      margin-bottom: 8px;
+      font-style: italic;
+      align-self: flex-start;
+    }
+    
+    /* Debug info styling */
+    .debug-panel {
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      background-color: rgba(0,0,0,0.8);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      z-index: 10000;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <div id="root">
+    <!-- Fallback content - this will be replaced by the chat widget when the script loads -->
+    <div style="padding: 20px; background-color: white; border-radius: 8px; max-width: 90%; box-shadow: 0 0 20px rgba(0,0,0,0.3);">
+      <h3 style="color: #4F46E5; margin-top: 0; font-size: 18px; font-weight: 600;">Healthcare Chat Widget</h3>
+      <p style="color: #333; margin-bottom: 10px;">Loading chat interface...</p>
+      <div style="background-color: #f3f4f6; padding: 8px; border-radius: 4px; font-size: 12px; color: #666;">
+        <p style="margin: 0 0 4px 0;"><strong>Debug Info:</strong></p>
+        <p style="margin: 0 0 4px 0;">URL: <span id="debug-url">Loading...</span></p>
+        <p style="margin: 0 0 4px 0;">UserID: <span id="debug-userid">Loading...</span></p>
+        <p style="margin: 0 0 4px 0;">Time: <span id="debug-time">Loading...</span></p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Debug script -->
+  <script>
+    // Fill debug info
+    document.getElementById('debug-url').textContent = window.location.href;
+    document.getElementById('debug-userid').textContent = window.location.pathname.split('/').pop();
+    document.getElementById('debug-time').textContent = new Date().toISOString();
+    console.log("Debug info loaded in widget");
+  </script>
+
+  <!-- Standalone Widget Implementation -->
+  <script>
+    // Ready function - executed when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      const root = document.getElementById('root');
+      const userId = window.location.pathname.split('/').pop() || '1';
+      
+      // Format timestamp for display
+      function formatTime(timestamp) {
+        if (!(timestamp instanceof Date)) {
+          timestamp = new Date(timestamp);
+        }
+        
+        // Check if valid date
+        if (isNaN(timestamp.getTime())) {
+          return 'just now';
+        }
+        
+        const now = new Date();
+        const diffMs = now - timestamp;
+        const diffMins = Math.floor(diffMs / 60000);
+        
+        if (diffMins < 1) {
+          return 'just now';
+        } else if (diffMins < 60) {
+          return `${diffMins}m ago`;
+        } else if (diffMins < 24 * 60) {
+          const hours = Math.floor(diffMins / 60);
+          return `${hours}h ago`;
+        } else {
+          return timestamp.toLocaleDateString(undefined, { 
+            month: 'short', 
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+        }
+      }
+      
+      let messages = [{
+        content: "Hi there! How can I help you today?",
+        sender: "assistant",
+        timestamp: new Date()
+      }];
+      
+      let isOpen = true;
+      let isLoading = false;
+      let isTyping = false;
+      
+      // Create and render widget HTML
+      function renderWidget() {
+        // Create widget HTML structure
+        const widgetHTML = `
+          <div class="chat-widget">
+            <div class="debug-panel">
+              <div>IFRAME MODE</div>
+              <div>UserID: ${userId}</div>
+              <div>Size: ${window.innerWidth}x${window.innerHeight}</div>
+            </div>
+            
+            <div class="chat-header">
+              <div>Healthcare Chat Widget</div>
+              <button id="close-chat" style="background: none; border: none; color: white; cursor: pointer; font-size: 20px;">×</button>
+            </div>
+            
+            <div class="chat-content" id="chat-content">
+              ${messages.map(message => `
+                <div class="chat-message ${message.sender === 'assistant' ? 'assistant-message' : 'user-message'}">
+                  <div class="message-bubble ${message.sender === 'assistant' ? 'assistant-bubble' : 'user-bubble'}">
+                    ${message.content}
+                  </div>
+                  <div class="message-meta">
+                    ${message.sender === 'assistant' ? 'Assistant' : 'You'} • ${formatTime(message.timestamp)}
+                  </div>
+                </div>
+              `).join('')}
+              ${isTyping ? '<div class="typing-indicator">Assistant is typing...</div>' : ''}
+            </div>
+            
+            <div class="chat-input-container">
+              <textarea id="chat-input" class="chat-input" placeholder="Type your message here..." rows="1"></textarea>
+              <button id="send-message" class="send-button">Send</button>
+            </div>
+          </div>
+        `;
+        
+        // Add the widget to the DOM
+        root.innerHTML = widgetHTML;
+        
+        // Scroll to the bottom of the chat content
+        const chatContent = document.getElementById('chat-content');
+        chatContent.scrollTop = chatContent.scrollHeight;
+        
+        // Add event listeners
+        document.getElementById('chat-input').addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+          }
+        });
+        
+        const chatInput = document.getElementById('chat-input');
+        chatInput.addEventListener('input', (e) => {
+          // Auto-resize the textarea
+          e.target.style.height = 'auto';
+          e.target.style.height = (e.target.scrollHeight) + 'px';
+        });
+        document.getElementById('send-message').addEventListener('click', sendMessage);
+        document.getElementById('close-chat').addEventListener('click', () => {
+          isOpen = false;
+          renderWidget();
+        });
+      }
+      
+      // Handle typing indicator - dummy function to simulate typing
+      function setTypingIndicator(isActiveTyping) {
+        isTyping = isActiveTyping;
+        renderWidget();
+      }
+      
+      // Send a message
+      async function sendMessage() {
+        const input = document.getElementById('chat-input');
+        const message = input.value.trim();
+        
+        if (!message) return;
+        
+        // Add user message
+        const userMessage = {
+          content: message,
+          sender: 'user',
+          timestamp: new Date()
+        };
+        
+        messages.push(userMessage);
+        input.value = '';
+        input.style.height = '40px'; // Reset height to default
+        isLoading = true;
+        
+        // Show typing indicator while processing
+        setTypingIndicator(true);
+        renderWidget();
+        
+        try {
+          // Send message to backend - use origin from window location since in iframe
+          // Get worker origin from iframe URL
+          const workerOrigin = window.location.origin;
+          const chatApiUrl = `${workerOrigin}/api/chat/${userId}`;
+          
+          // Create a random visitor ID if not already stored
+          if (!window.localStorage.getItem('healthchat_visitor_id')) {
+            window.localStorage.setItem('healthchat_visitor_id', Date.now().toString() + Math.random().toString(36).substring(2, 15));
+          }
+          const visitorId = window.localStorage.getItem('healthchat_visitor_id');
+          
+          console.log('Sending chat message to:', chatApiUrl);
+          const response = await fetch(chatApiUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              message: userMessage.content,
+              visitorId: visitorId,
+              // Only send conversationId if we have one from previous messages
+              ...(window.conversationId ? { conversationId: window.conversationId } : {})
+            }),
+          });
+          
+          if (!response.ok) {
+            console.error('Error status:', response.status);
+            throw new Error('Failed to get response');
+          }
+          
+          const data = await response.json();
+          console.log('Chat response:', data);
+          
+          // Store conversation ID for future messages
+          if (data.conversationId) {
+            window.conversationId = data.conversationId;
+            console.log('Conversation ID saved:', window.conversationId);
+          }
+          
+          // Hide typing indicator
+          setTypingIndicator(false);
+          
+          // Add assistant response
+          const assistantMessage = {
+            content: data.message || 'Sorry, I could not process your request. Please try again.',
+            sender: 'assistant',
+            timestamp: new Date()
+          };
+          
+          // Add to local messages
+          messages.push(assistantMessage);
+        } catch (err) {
+          console.error('Error sending message:', err);
+          
+          // Hide typing indicator
+          setTypingIndicator(false);
+          
+          // Add error message
+          const errorMessage = {
+            content: 'Sorry, there was an error processing your message. Please try again later.',
+            sender: 'assistant',
+            timestamp: new Date()
+          };
+          
+          messages.push(errorMessage);
+        } finally {
+          isLoading = false;
+          renderWidget();
+        }
+      }
+      
+      // Initialize the widget
+      renderWidget();
+      
+      // Handle window resize
+      window.addEventListener('resize', () => {
+        renderWidget();
+      });
+    });
+  </script>
+
+  <!-- Base scripts to initialize the environment -->
+  <script>
+    // Add a class to body to indicate this is the widget mode
+    document.body.classList.add('widget-only-mode');
+    // Create a global variable that can be checked in components
+    window.WIDGET_ONLY_MODE = true;
+    // This is important for main.tsx to detect when we're in iframe mode
+    window.inWidgetIframe = window.self !== window.top;
+    // Set a flag in localStorage to help prevent main.tsx from loading in widget context
+    localStorage.setItem('widget_standalone_mode', 'true');
+    // Log that widget HTML has loaded
+    console.log("Widget HTML template loaded successfully");
+  </script>
+</body>
+</html>

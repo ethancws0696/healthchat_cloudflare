@@ -1,0 +1,30 @@
+name = "healthchat"
+main = "index.js"
+compatibility_date = "2024-03-21"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+ENVIRONMENT = "production"
+
+OPENAI_API_KEY = "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"
+
+# KV Namespace for caching and storing small key-value data
+kv_namespaces = [
+  { binding = "HEALTHCHAT_KV", id = "d0394c6067a747aebb7bb699a90f253c" }
+]
+
+# D1 Database for structured data
+[[d1_databases]]
+binding = "HEALTHCHAT_DB"
+database_name = "healthchat"
+database_id = "afb5d056-537f-473b-814d-1afaae736852"
+
+
+# Route configuration is commented out for .workers.dev domain
+# Uncomment and update if using a custom domain
+# [routes]
+# pattern = "api.healthchat.ai/*"
+# zone_name = "healthchat.ai"
+
+[env.development]
+vars = { ENVIRONMENT = "development" }

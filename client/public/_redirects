@@ -1,0 +1,5 @@
+# SPA fallback
+/*  /index.html  200
+
+# Properly handle CORS preflight requests
+/api/*  https://healthchat.ethan-c87.workers.dev/api/:splat  200

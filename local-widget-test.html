@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Widget Local Test</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #4F46E5;
+    }
+    p {
+      line-height: 1.6;
+    }
+    .instructions {
+      background-color: #f0f9ff;
+      border-left: 4px solid #0ea5e9;
+      padding: 15px;
+      margin: 20px 0;
+    }
+    code {
+      background-color: #f3f4f6;
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>HealthChat Widget Local Test</h1>
+    
+    <p>This page demonstrates embedding the HealthChat widget in a local HTML file. If everything is set up correctly, you should see the widget appear in the bottom right corner.</p>
+    
+    <div class="instructions">
+      <h3>Important Instructions:</h3>
+      <p>To properly test this file:</p>
+      <ol>
+        <li>Save this file to your local computer</li>
+        <li>Open it in a web browser (do not use the <code>file://</code> protocol - use a local server)</li>
+        <li>The widget will load from your Cloudflare Worker URL: <code>https://healthchat.ethan-c87.workers.dev</code></li>
+        <li>If you want to use a different worker URL, edit the script source in the widget script tag</li>
+      </ol>
+    </div>
+    
+    <h2>Test Content</h2>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in dui mauris. Vivamus hendrerit arcu sed erat molestie vehicula. Sed auctor neque eu tellus rhoncus ut eleifend nibh porttitor. Ut in nulla enim. Phasellus molestie magna non est bibendum non venenatis nisl tempor. Suspendisse dictum feugiat nisl ut dapibus.</p>
+    
+    <p>Curabitur lobortis id lorem id bibendum. Ut id consectetur magna. Quisque volutpat augue enim, pulvinar lobortis nibh lacinia at. Vestibulum nec erat ut mi sollicitudin porttitor id sit amet risus. Nam tempus vel odio vitae aliquam.</p>
+    
+    <p>In imperdiet enim nec ante interdum, et semper sem interdum. Vivamus egestas elit sed est sollicitudin, vel hendrerit enim egestas. Donec rutrum tellus at neque tincidunt, ut venenatis est vestibulum. Morbi nec ligula purus.</p>
+  </div>
+  
+  <!-- Widget script tag with the current Replit URL -->
+  <script>
+    // Detect the current Replit URL automatically
+    (function() {
+      // Function to load the widget script
+      function loadWidgetScript() {
+        // Create script element
+        const script = document.createElement('script');
+        
+        // Set source to the Cloudflare Worker domain
+        const currentDomain = window.location.hostname;
+        if (currentDomain.includes('replit')) {
+          // We're in a Replit environment - use relative URL
+          script.src = `${window.location.protocol}//${window.location.host}/api/widget/1.js`;
+        } else if (currentDomain.includes('localhost')) {
+          // We're in local development - try to load from localhost
+          script.src = 'http://localhost:3000/api/widget/1.js';
+          console.log('Loading widget from localhost. Make sure your server is running!');
+        } else {
+          // Default to your Cloudflare Worker URL
+          script.src = 'https://healthchat.ethan-c87.workers.dev/api/widget/1.js';
+        }
+        
+        // Add to document
+        document.body.appendChild(script);
+        console.log('Loading widget from: ' + script.src);
+      }
+      
+      // Execute on page load
+      if (document.readyState === 'complete') {
+        loadWidgetScript();
+      } else {
+        window.addEventListener('load', loadWidgetScript);
+      }
+    })();
+  </script>
+</body>
+</html>

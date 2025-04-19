@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HealthChat Widget Test</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f8fa;
+      color: #333;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    
+    h1 {
+      color: #4F46E5;
+      margin-bottom: 30px;
+    }
+    
+    .demo-section {
+      background: white;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      margin-bottom: 30px;
+    }
+    
+    .info-box {
+      background-color: #eef2ff;
+      border-left: 4px solid #4F46E5;
+      padding: 15px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+    
+    .code-block {
+      background-color: #f8f9fc;
+      padding: 15px;
+      border-radius: 4px;
+      font-family: monospace;
+      overflow-x: auto;
+      border: 1px solid #e2e8f0;
+    }
+    
+    .button {
+      background-color: #4F46E5;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.2s;
+    }
+    
+    .button:hover {
+      background-color: #4338ca;
+    }
+    
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>HealthChat Widget Test Page</h1>
+    
+    <div class="demo-section">
+      <h2>Widget Demo</h2>
+      <p>This page demonstrates the HealthChat widget in action. The widget should appear in the bottom-right corner of the page.</p>
+      
+      <div class="info-box">
+        <p><strong>Note:</strong> This page automatically detects whether you're running in development or production mode and loads the appropriate widget source.</p>
+      </div>
+      
+      <p>Chat widget status: <span id="widget-status">Loading...</span></p>
+    </div>
+    
+    <div class="demo-section">
+      <h2>How to Embed</h2>
+      <p>To embed the HealthChat widget on your website, add the following script tag to your HTML:</p>
+      
+      <div class="code-block">
+        <code id="embed-code">&lt;script src="https://healthchat.ethan-c87.workers.dev/api/widget/1.js"&gt;&lt;/script&gt;</code>
+      </div>
+      
+      <p>The script will automatically create and initialize the chat widget on your page.</p>
+    </div>
+    
+    <div class="footer">
+      <p>HealthChat - AI-powered chat widget for healthcare providers</p>
+    </div>
+  </div>
+
+  <script>
+    // Detect environment
+    const isLocalhost = window.location.hostname === 'localhost' || 
+                        window.location.hostname === '127.0.0.1' ||
+                        window.location.hostname.includes('replit');
+    
+    // Update widget status
+    const widgetStatus = document.getElementById('widget-status');
+    
+    // Create and append the script tag
+    const script = document.createElement('script');
+    
+    if (isLocalhost) {
+      script.src = '/api/widget/1.js'; // Local development
+      document.getElementById('embed-code').textContent = '<script src="/api/widget/1.js"><' + '/script>';
+    } else {
+      script.src = 'https://healthchat.ethan-c87.workers.dev/api/widget/1.js'; // Production
+    }
+    
+    script.onload = function() {
+      widgetStatus.textContent = 'Loaded successfully';
+      widgetStatus.style.color = '#10b981';
+    };
+    
+    script.onerror = function() {
+      widgetStatus.textContent = 'Failed to load';
+      widgetStatus.style.color = '#ef4444';
+    };
+    
+    document.body.appendChild(script);
+  </script>
+</body>
+</html>

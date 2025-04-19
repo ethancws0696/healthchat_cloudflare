@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HealthChat Widget Test (Vercel Environment)</title>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8fafc;
+      color: #334155;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    header {
+      padding: 1rem 0;
+      border-bottom: 1px solid #e2e8f0;
+      margin-bottom: 2rem;
+    }
+    h1 {
+      font-size: 1.875rem;
+      color: #1e293b;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      font-size: 1.125rem;
+      color: #64748b;
+      margin-bottom: 2rem;
+    }
+    .card {
+      background-color: white;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      margin-bottom: 2rem;
+    }
+    .status {
+      padding: 1rem;
+      border-radius: 0.375rem;
+      margin-bottom: 1rem;
+    }
+    .status.success {
+      background-color: #dcfce7;
+      color: #166534;
+    }
+    .status.warning {
+      background-color: #fef9c3;
+      color: #854d0e;
+    }
+    .status.error {
+      background-color: #fee2e2;
+      color: #b91c1c;
+    }
+    code {
+      font-family: monospace;
+      background-color: #f1f5f9;
+      padding: 0.125rem 0.25rem;
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+    }
+    .debug-panel {
+      max-height: 300px;
+      overflow-y: auto;
+      font-family: monospace;
+      font-size: 0.875rem;
+      background-color: #1e293b;
+      color: #f8fafc;
+      padding: 1rem;
+      border-radius: 0.375rem;
+    }
+    .debug-panel p {
+      margin: 0.25rem 0;
+    }
+    .logo {
+      font-weight: bold;
+      font-size: 1.5rem;
+      color: #4f46e5;
+      display: flex;
+      align-items: center;
+    }
+    .logo svg {
+      margin-right: 0.5rem;
+    }
+    .footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #e2e8f0;
+      font-size: 0.875rem;
+      color: #64748b;
+    }
+    ul {
+      padding-left: 1.5rem;
+    }
+    li {
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 13.5997 2.37562 15.1116 3.04346 16.4525C3.22094 16.8088 3.28001 17.2161 3.17712 17.6006L2.58151 19.8267C2.32295 20.793 3.20701 21.677 4.17335 21.4185L6.39939 20.8229C6.78393 20.72 7.19121 20.7791 7.54753 20.9565C8.88837 21.6244 10.4003 22 12 22Z" stroke="#4f46e5" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M8 12H8.01" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M12 12H12.01" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M16 12H16.01" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        HealthChat
+      </div>
+    </header>
+
+    <h1>Widget Integration Test Page</h1>
+    <p class="subtitle">This page simulates a Vercel deployment environment to test the widget integration.</p>
+
+    <div class="card">
+      <h2>Test Environment</h2>
+      <div class="status warning">
+        <strong>Vercel Environment Simulator</strong> - This page is configured to behave like it's hosted on Vercel.
+      </div>
+      <p>This test page is designed to validate that the widget properly functions when embedded on a Vercel-hosted site. We've configured the page to:</p>
+      <ul>
+        <li>Force all API requests to the Cloudflare Worker URL</li>
+        <li>Check that URL routing and postMessage communication work correctly</li>
+        <li>Validate that widget resources load properly across domains</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Widget Status</h2>
+      <div id="status-panel" class="status">
+        Checking widget status...
+      </div>
+      <p>The widget should appear in the bottom-right corner of this page. Click on it to open the chat interface.</p>
+      <h3>Debug Information</h3>
+      <div id="debug-panel" class="debug-panel">
+        <p>Initializing widget...</p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer container">
+    <p>HealthChat Widget Test Page © 2023</p>
+  </footer>
+
+  <!-- Widget Integration Script -->
+  <script>
+    // Note: We can't override window.location directly,
+    // so instead we'll use a global variable that our scripts can check
+    window.VERCEL_SIMULATION = true;
+    
+    // Debug logger
+    const debugLog = (message) => {
+      const debugPanel = document.getElementById('debug-panel');
+      const p = document.createElement('p');
+      const timestamp = new Date().toLocaleTimeString();
+      p.textContent = `[${timestamp}] ${message}`;
+      debugPanel.appendChild(p);
+      debugPanel.scrollTop = debugPanel.scrollHeight;
+    };
+    
+    // Log the simulation status
+    debugLog('Vercel environment simulation active');
+    
+    // Override console.log for widget
+    const originalConsoleLog = console.log;
+    console.log = function() {
+      const args = Array.from(arguments);
+      originalConsoleLog.apply(console, args);
+      
+      // Only log HealthChat related messages
+      const message = args.join(' ');
+      if (message.includes('HealthChat') || message.includes('healthchat') || message.includes('widget')) {
+        debugLog(message);
+      }
+    };
+    
+    // Set up widget configuration
+    window.healthChatConfig = {
+      // Use demo user ID
+      userId: 'demo',
+      // Force API URL to be the Cloudflare Worker
+      apiUrl: 'https://healthchat.ethan-c87.workers.dev',
+      // Custom settings
+      primaryColor: '#4F46E5',
+      position: 'bottom-right',
+      greeting: 'Hello from the test page! This widget is loading the demo agent.'
+    };
+    
+    // Update status panel
+    const updateStatus = (type, message) => {
+      const statusPanel = document.getElementById('status-panel');
+      statusPanel.className = `status ${type}`;
+      statusPanel.innerHTML = message;
+    };
+    
+    // Check if widget loads successfully
+    window.addEventListener('message', (event) => {
+      try {
+        const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+        
+        if (data && data.type === 'HEALTHCHAT_READY_CONFIRMED') {
+          updateStatus('success', '<strong>Widget loaded successfully!</strong> The widget has initialized and is ready to use.');
+          debugLog('Widget initialization confirmed via postMessage');
+        }
+        
+        if (data && data.type === 'HEALTHCHAT_ERROR') {
+          updateStatus('error', `<strong>Widget error:</strong> ${data.error}`);
+          debugLog(`Widget error: ${data.error}`);
+        }
+      } catch (e) {
+        // Not a JSON message, ignore
+      }
+    });
+    
+    // Set timeout to check if widget loaded
+    setTimeout(() => {
+      if (!window.healthChatWidgetLoaded) {
+        updateStatus('error', '<strong>Widget failed to load!</strong> The widget script did not initialize properly.');
+        debugLog('Widget failed to load within timeout period');
+      }
+    }, 5000);
+    
+    // Load the widget script
+    const loadWidget = () => {
+      debugLog('Loading widget script...');
+      const script = document.createElement('script');
+      script.src = '/api/widget/demo.js';
+      script.onload = () => debugLog('Widget script loaded successfully');
+      script.onerror = (e) => {
+        debugLog('Error loading widget script');
+        updateStatus('error', '<strong>Failed to load widget script!</strong> Check browser console for details.');
+      };
+      document.body.appendChild(script);
+    };
+    
+    // Load the widget after a short delay
+    setTimeout(loadWidget, 1000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="HealthChat AI - Intelligent Chat for Healthcare Providers">
+  <title>HealthChat AI - Intelligent Chat for Healthcare Providers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    @keyframes pulse {
+      0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.7);
+      }
+      70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(79, 70, 229, 0);
+      }
+      100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(79, 70, 229, 0);
+      }
+    }
+    .chat-window {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .chat-bubble {
+      max-width: 80%;
+      border-radius: 1rem;
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.5rem;
+      position: relative;
+    }
+    .chat-bubble.ai::before {
+      content: "";
+      position: absolute;
+      left: -0.5rem;
+      bottom: 0.5rem;
+      width: 0.75rem;
+      height: 0.75rem;
+      background: #F3F4F6;
+      transform: rotate(45deg);
+    }
+    .chat-bubble.user::after {
+      content: "";
+      position: absolute;
+      right: -0.5rem;
+      bottom: 0.5rem;
+      width: 0.75rem;
+      height: 0.75rem;
+      background: #4F46E5;
+      transform: rotate(45deg);
+    }
+    .pulse-animation {
+      animation: pulse 2s infinite;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+</html>

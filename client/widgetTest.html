@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HealthChat Widget Test Page</title>
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      margin: 0;
+      padding: 20px;
+      color: #1f2937;
+      line-height: 1.6;
+    }
+    header {
+      background-color: #f9fafb;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border: 1px solid #e5e7eb;
+    }
+    h1 {
+      color: #4f46e5;
+      margin-top: 0;
+    }
+    main {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 768px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+    }
+    section {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e5e7eb;
+    }
+    h2 {
+      margin-top: 0;
+      color: #111827;
+    }
+    .settings-panel {
+      background-color: #f9fafb;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    select, input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #4f46e5;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    button:hover {
+      background-color: #4338ca;
+    }
+    .status {
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 4px;
+      background-color: #f3f4f6;
+    }
+    .log {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #1e293b;
+      color: #e2e8f0;
+      border-radius: 6px;
+      font-family: monospace;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    code {
+      display: block;
+      white-space: pre-wrap;
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>HealthChat Widget Test Page</h1>
+    <p>This page tests the embedding and functionality of the HealthChat widget in different environments.</p>
+  </header>
+  
+  <main>
+    <section>
+      <h2>Test Content</h2>
+      <p>This is a sample healthcare website page. The widget should appear in the bottom-right corner of this page.</p>
+      <p>The chat widget should be fully functional with:</p>
+      <ul>
+        <li>AI-powered responses based on the provider profile</li>
+        <li>Customizable appearance (colors, position, etc.)</li>
+        <li>Responsive design that works on mobile</li>
+        <li>Ability to collect visitor information</li>
+      </ul>
+      
+      <div class="settings-panel">
+        <h3>Widget Configuration</h3>
+        <form id="widget-config-form">
+          <label for="user-id">User ID:</label>
+          <input type="text" id="user-id" value="1">
+          
+          <label for="widget-position">Widget Position:</label>
+          <select id="widget-position">
+            <option value="bottom-right">Bottom Right</option>
+            <option value="bottom-left">Bottom Left</option>
+            <option value="top-right">Top Right</option>
+            <option value="top-left">Top Left</option>
+          </select>
+          
+          <label for="primary-color">Primary Color:</label>
+          <input type="color" id="primary-color" value="#4F46E5">
+          
+          <button type="button" id="reload-widget">Reload Widget</button>
+        </form>
+      </div>
+      
+      <div class="status">
+        <strong>Environment:</strong> <span id="environment-status">Detecting...</span>
+      </div>
+      
+      <div style="margin-top: 20px; padding: 15px; background-color: #f0f9ff; border: 1px solid #bae6fd; border-radius: 6px;">
+        <h3 style="margin-top: 0; color: #0284c7; font-size: 16px;">Manual Testing Links</h3>
+        <p>If the widget isn't appearing, try these direct links:</p>
+        <ul>
+          <li><a href="javascript:void(0);" id="direct-test-link" style="color: #0284c7; font-weight: 500;">Create Test Widget Directly</a></li>
+          <li><a href="#" id="open-widget-tab" target="_blank" style="color: #0284c7; font-weight: 500;">Open Widget Page in New Tab</a></li>
+          <li><a href="javascript:void(0);" id="force-visibility-link" style="color: #0284c7; font-weight: 500;">Force Widget Visibility</a></li>
+        </ul>
+      </div>
+      
+      <div class="log">
+        <h3>Widget Logs</h3>
+        <div id="log-container"></div>
+      </div>
+    </section>
+    
+    <section>
+      <h2>Widget Information</h2>
+      <p>The widget is loaded via an embedded script that creates an iframe to load the chat interface.</p>
+      <p>The script automatically detects whether it's running in:</p>
+      <ul>
+        <li>Local development</li>
+        <li>Replit environment</li>
+        <li>Production (Cloudflare Workers)</li>
+      </ul>
+      
+      <p>Current Widget Script URL:</p>
+      <code id="script-url">Loading...</code>
+      
+      <h3>Debugging</h3>
+      <p>If the widget doesn't load, check:</p>
+      <ol>
+        <li>Network requests in browser developer tools</li>
+        <li>Console errors</li>
+        <li>Server logs</li>
+      </ol>
+    </section>
+  </main>
+
+  <script>
+    // Log interceptor to display messages in the UI
+    const originalConsoleLog = console.log;
+    const originalConsoleError = console.error;
+    const logContainer = document.getElementById('log-container');
+    
+    console.log = function(...args) {
+      originalConsoleLog.apply(console, args);
+      
+      // Capture all logs related to HealthChat or WebSocket
+      if (args[0] && typeof args[0] === 'string' && 
+          (args[0].includes('HealthChat') || 
+           args[0].includes('WebSocket') || 
+           args[0].includes('widget') || 
+           args[0].toLowerCase().includes('socket'))) {
+        const logElement = document.createElement('code');
+        logElement.textContent = args.join(' ');
+        logContainer.appendChild(logElement);
+        // Auto-scroll to bottom
+        logContainer.scrollTop = logContainer.scrollHeight;
+      }
+    };
+    
+    console.error = function(...args) {
+      originalConsoleError.apply(console, args);
+      
+      const logElement = document.createElement('code');
+      logElement.textContent = 'ERROR: ' + args.join(' ');
+      logElement.style.color = '#ef4444';
+      logContainer.appendChild(logElement);
+      // Auto-scroll to bottom
+      logContainer.scrollTop = logContainer.scrollHeight;
+    };
+    
+    // Environment detection
+    const environmentStatus = document.getElementById('environment-status');
+    const scriptUrl = document.getElementById('script-url');
+    let currentEnv = 'unknown';
+    
+    function detectEnvironment() {
+      const hostname = window.location.hostname;
+      
+      if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        currentEnv = 'local';
+        environmentStatus.textContent = 'Local Development';
+        return '/api/widget/1.js';
+      } else if (hostname.includes('replit') || hostname.includes('.repl.co')) {
+        currentEnv = 'replit';
+        environmentStatus.textContent = 'Replit Environment';
+        return '/api/widget/1.js';
+      } else if (hostname.includes('pages.dev')) {
+        currentEnv = 'cloudflare';
+        environmentStatus.textContent = 'Cloudflare Pages Environment';
+        return 'https://healthchat.ethan-c87.workers.dev/api/widget/1.js';
+      } else {
+        currentEnv = 'production';
+        environmentStatus.textContent = 'Production (Cloudflare Workers)';
+        return 'https://healthchat.ethan-c87.workers.dev/api/widget/1.js';
+      }
+    }
+    
+    // Function to load the widget
+    function loadWidget(userId = '1') {
+      // Remove any existing widget script
+      const existingScript = document.getElementById('healthchat-widget-script');
+      if (existingScript) {
+        existingScript.remove();
+        // Also try to remove the widget container if it exists
+        const widgetContainer = document.getElementById('healthchat-widget-container-' + userId);
+        if (widgetContainer) {
+          widgetContainer.remove();
+        }
+        // Try to find and remove iframe
+        const iframe = document.getElementById('healthchat-widget-iframe');
+        if (iframe) {
+          iframe.remove();
+        }
+        // Reset the global flag
+        window.healthChatWidgetLoaded = false;
+        
+        // Add status to log
+        console.log('HealthChat Test Page: Previous widget elements removed');
+      }
+      
+      // Create new script based on environment
+      const widgetScriptUrl = detectEnvironment();
+      scriptUrl.textContent = widgetScriptUrl;
+      
+      // Create script element
+      const script = document.createElement('script');
+      script.id = 'healthchat-widget-script';
+      script.src = widgetScriptUrl;
+      
+      // Add debug handler to detect when script loads
+      script.onload = function() {
+        console.log('HealthChat Test Page: Widget script loaded successfully');
+        
+        // Check for the widget after a short delay
+        setTimeout(checkWidgetVisibility, 2000);
+      };
+      
+      // Add global config for widget customization
+      window.healthChatConfig = {
+        position: document.getElementById('widget-position').value,
+        primaryColor: document.getElementById('primary-color').value
+      };
+      
+      // Log the loading
+      console.log('HealthChat Test Page: Loading widget script from ' + widgetScriptUrl);
+      
+      // Append to document
+      document.body.appendChild(script);
+    }
+    
+    // Initial load
+    document.addEventListener('DOMContentLoaded', function() {
+      loadWidget();
+    });
+    
+    // Reload button functionality
+    document.getElementById('reload-widget').addEventListener('click', function() {
+      const userId = document.getElementById('user-id').value;
+      loadWidget(userId);
+    });
+    
+    // Update widget config when values change
+    document.getElementById('widget-position').addEventListener('change', function() {
+      window.healthChatConfig = {
+        ...window.healthChatConfig,
+        position: this.value
+      };
+    });
+    
+    document.getElementById('primary-color').addEventListener('input', function() {
+      window.healthChatConfig = {
+        ...window.healthChatConfig,
+        primaryColor: this.value
+      };
+    });
+    
+    // Add event listeners for manual testing links
+    // Open Widget in New Tab link
+    document.getElementById('open-widget-tab').addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      // Use the appropriate URL based on environment
+      let widgetUrl;
+      if (currentEnv === 'local' || currentEnv === 'replit') {
+        widgetUrl = window.location.origin + '/widget/1';
+      } else {
+        // For Cloudflare or production environments
+        widgetUrl = 'https://healthchat.ethan-c87.workers.dev/widget/1';
+      }
+      
+      window.open(widgetUrl, '_blank');
+      console.log('HealthChat Test Page: Opening widget in new tab: ' + widgetUrl);
+    });
+    
+    document.getElementById('direct-test-link').addEventListener('click', function() {
+      // Create a test iframe directly pointing to the widget URL
+      const testIframe = document.createElement('iframe');
+      testIframe.id = 'healthchat-test-iframe';
+      
+      // Use the appropriate origin based on environment
+      if (currentEnv === 'local' || currentEnv === 'replit') {
+        testIframe.src = window.location.origin + '/widget/1';
+      } else {
+        // For Cloudflare or production environments
+        testIframe.src = 'https://healthchat.ethan-c87.workers.dev/widget/1';
+      }
+      
+      testIframe.style.position = 'fixed';
+      testIframe.style.bottom = '20px';
+      testIframe.style.right = '20px';
+      testIframe.style.width = '80px';
+      testIframe.style.height = '80px';
+      testIframe.style.border = 'none';
+      testIframe.style.borderRadius = '50%';
+      testIframe.style.backgroundColor = '#4F46E5';
+      testIframe.style.boxShadow = '0 0 0 2px white, 0 0 10px rgba(0,0,0,0.5)';
+      testIframe.style.zIndex = '2147483647';
+      document.body.appendChild(testIframe);
+      console.log('HealthChat Test Page: Created test iframe via direct link');
+    });
+    
+    document.getElementById('force-visibility-link').addEventListener('click', function() {
+      const iframe = document.getElementById('healthchat-widget-iframe');
+      if (iframe) {
+        iframe.style.width = '80px';
+        iframe.style.height = '80px';
+        iframe.style.opacity = '1';
+        iframe.style.background = '#4F46E5';
+        iframe.style.borderRadius = '50%';
+        iframe.style.boxShadow = '0 0 10px rgba(0,0,0,0.3)';
+        iframe.style.zIndex = '2147483647';
+        iframe.style.position = 'fixed';
+        iframe.style.bottom = '20px';
+        iframe.style.right = '20px';
+        console.log('HealthChat Test Page: Forced widget visibility via link');
+      } else {
+        console.error('HealthChat Test Page: Cannot force visibility - iframe not found');
+        alert('Widget iframe not found. Try reloading the widget first.');
+      }
+    });
+    
+    // Function to check if widget is visible and debug if not
+    function checkWidgetVisibility() {
+      const iframe = document.getElementById('healthchat-widget-iframe');
+      const container = document.getElementById('healthchat-widget-container-1'); // Using default userId 1
+      
+      console.log('HealthChat Test Page: Checking widget visibility');
+      
+      if (!iframe) {
+        console.error('HealthChat Test Page: Widget iframe not found in DOM');
+        
+        // Check if container exists
+        if (container) {
+          console.log('HealthChat Test Page: Container exists but iframe missing');
+        } else {
+          console.error('HealthChat Test Page: Widget container not found in DOM');
+        }
+        
+        // Add manual widget debugger
+        addWidgetDebugger();
+      } else {
+        console.log('HealthChat Test Page: Widget iframe found with properties:',
+          'width=' + iframe.style.width,
+          'height=' + iframe.style.height,
+          'opacity=' + iframe.style.opacity,
+          'src=' + iframe.src
+        );
+        
+        // Check if iframe is visible
+        if (iframe.style.opacity !== '1' || iframe.style.width === '0px') {
+          console.error('HealthChat Test Page: Widget iframe exists but may not be visible');
+        } else {
+          console.log('HealthChat Test Page: Widget appears to be loaded correctly');
+        }
+      }
+    }
+    
+    // Function to add a debug helper that forces widget visibility
+    function addWidgetDebugger() {
+      // Create button to force widget visibility
+      const debugSection = document.createElement('div');
+      debugSection.innerHTML = `
+        <div style="position: fixed; bottom: 10px; left: 10px; background: #f8fafc; border: 1px solid #cbd5e1; padding: 10px; border-radius: 8px; z-index: 10000; max-width: 300px;">
+          <h3 style="margin-top: 0; color: #4f46e5;">Widget Debugger</h3>
+          <p>Widget not detected. Try manual fixes:</p>
+          <button id="force-widget-visibility" style="background: #4f46e5; color: white; border: none; padding: 8px 12px; margin: 5px 0; border-radius: 4px; cursor: pointer;">Force Widget Visibility</button>
+          <button id="create-test-iframe" style="background: #64748b; color: white; border: none; padding: 8px 12px; margin: 5px 0; border-radius: 4px; cursor: pointer;">Create Test Widget</button>
+        </div>
+      `;
+      document.body.appendChild(debugSection);
+      
+      // Add event listeners
+      document.getElementById('force-widget-visibility').addEventListener('click', function() {
+        const iframe = document.getElementById('healthchat-widget-iframe');
+        if (iframe) {
+          iframe.style.width = '80px';
+          iframe.style.height = '80px';
+          iframe.style.opacity = '1';
+          iframe.style.background = '#4F46E5';
+          iframe.style.borderRadius = '50%';
+          iframe.style.boxShadow = '0 0 10px rgba(0,0,0,0.3)';
+          iframe.style.zIndex = '2147483647';
+          iframe.style.position = 'fixed';
+          iframe.style.bottom = '20px';
+          iframe.style.right = '20px';
+          console.log('HealthChat Test Page: Forced widget visibility');
+        } else {
+          console.error('HealthChat Test Page: Cannot force visibility - iframe not found');
+        }
+      });
+      
+      document.getElementById('create-test-iframe').addEventListener('click', function() {
+        // Create a test iframe directly pointing to the widget URL
+        const testIframe = document.createElement('iframe');
+        testIframe.id = 'healthchat-test-iframe';
+        
+        // Use the appropriate origin based on environment
+        if (currentEnv === 'local' || currentEnv === 'replit') {
+          testIframe.src = window.location.origin + '/widget/1';
+        } else {
+          // For Cloudflare or production environments
+          testIframe.src = 'https://healthchat.ethan-c87.workers.dev/widget/1';
+        }
+        
+        testIframe.style.position = 'fixed';
+        testIframe.style.bottom = '20px';
+        testIframe.style.right = '20px';
+        testIframe.style.width = '80px';
+        testIframe.style.height = '80px';
+        testIframe.style.border = 'none';
+        testIframe.style.borderRadius = '50%';
+        testIframe.style.backgroundColor = '#4F46E5';
+        testIframe.style.boxShadow = '0 0 0 2px white, 0 0 10px rgba(0,0,0,0.5)';
+        testIframe.style.zIndex = '2147483647';
+        document.body.appendChild(testIframe);
+        console.log('HealthChat Test Page: Created test iframe');
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+# Config file for Cloudflare Pages
+
+# Tell Cloudflare to process JavaScript module files with the correct MIME type
+[build.processing]
+  skip = false
+  
+[build.processing.javascript]
+  bundle = false
+  minify = false
+
+# Configure MIME types correctly
+[build.processing.headers]
+  "/*.js" = { "Content-Type" = "application/javascript" }
+  "/*.mjs" = { "Content-Type" = "application/javascript" }
+  "/assets/*.js" = { "Content-Type" = "application/javascript" }
+  "/*.css" = { "Content-Type" = "text/css" }
+
+# Configure SPA routing
+[build.processing.html]
+  pretty_urls = true
+
+[site]
+  bucket = "./dist"
+  entry-point = "."
